@@ -3,7 +3,10 @@ WORKDIR /build
 COPY pom.xml .
 COPY product-service ./product-service
 COPY common-library ./common-library
-RUN mvn -N install -DskipTests && mvn -f common-library/pom.xml clean install -DskipTests && mvn -f product-service/pom.xml clean package -DskipTests
+RUN mkdir -p /root/.m2/repository/com/booksellingapp/book-selling-app/1.0.0 && \
+    cp pom.xml /root/.m2/repository/com/booksellingapp/book-selling-app/1.0.0/book-selling-app-1.0.0.pom && \
+    mvn -f common-library/pom.xml clean install -DskipTests && \
+    mvn -f product-service/pom.xml clean package -DskipTests
 
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
