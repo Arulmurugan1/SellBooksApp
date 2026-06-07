@@ -1,0 +1,27 @@
+Service Category,Service Name,Host,Port,Container Name,Protocol,Credentials,Connection String,Description,Health Check,Status
+========================================================================================================================================================================
+MICROSERVICES,API Gateway,localhost,8080,api-gateway-app,HTTP,N/A,http://localhost:8080,Entry point for all client requests,http://localhost:8080/actuator/health,Active
+MICROSERVICES,Product Service,localhost,8081,product-service-app,HTTP,N/A,http://localhost:8081,Manages product catalog and availability checks,http://localhost:8081/actuator/health,Active
+MICROSERVICES,Order Service,localhost,8082,order-service-app,HTTP,N/A,http://localhost:8082,Creates orders and orchestrates Saga pattern,http://localhost:8082/actuator/health,Active
+MICROSERVICES,Inventory Service,localhost,8083,inventory-service-app,HTTP,N/A,http://localhost:8083,Tracks stock levels and inventory reservations,http://localhost:8083/actuator/health,Active
+MICROSERVICES,Payment Service,localhost,8084,payment-service-app,HTTP,N/A,http://localhost:8084,Processes asynchronous payment transactions,http://localhost:8084/actuator/health,Active
+========================================================================================================================================================================
+DATABASE,MySQL,localhost,3306,mysql-booksellingapp,MySQL,root/root,jdbc:mysql://mysql:3306/product_db,Primary database server for all services,mysqladmin ping -h localhost,Active
+========================================================================================================================================================================
+SERVICE DISCOVERY,Eureka Server,localhost,8761,eureka-server-app,HTTP,N/A,http://localhost:8761,Service registry and health monitoring,http://localhost:8761/eureka/,Active
+========================================================================================================================================================================
+MESSAGE BROKER,Apache Kafka,localhost,9092,kafka-booksellingapp,PLAINTEXT,N/A,kafka:9092,Event streaming platform for async communication,kafka-broker-api-versions --bootstrap-server localhost:9092,Active
+MESSAGE BROKER,Zookeeper,localhost,2181,zookeeper-booksellingapp,CLIENT_PORT,N/A,zookeeper:2181,Coordination service for Kafka cluster,N/A,Active
+========================================================================================================================================================================
+MONITORING,Prometheus,localhost,9090,prometheus-booksellingapp,HTTP,N/A,http://localhost:9090,Metrics collection and time-series database,N/A,Active
+MONITORING,Grafana,localhost,3000,grafana-booksellingapp,HTTP,admin/admin,http://localhost:3000,Metrics visualization and dashboarding platform,N/A,Active
+========================================================================================================================================================================
+KAFKA TOPICS,order-created Topic,kafka,9092,kafka-booksellingapp,PLAINTEXT,N/A,N/A,Published by Order Service when order is created,N/A,Active
+KAFKA TOPICS,payment-processed Topic,kafka,9092,kafka-booksellingapp,PLAINTEXT,N/A,N/A,Published by Payment Service with payment results,N/A,Active
+KAFKA TOPICS,order-cancelled Topic,kafka,9092,kafka-booksellingapp,PLAINTEXT,N/A,N/A,Published by Order Service when order is cancelled,N/A,Active
+========================================================================================================================================================================
+DATABASES,Product Database,mysql,3306,mysql-booksellingapp,MySQL,root/root,jdbc:mysql://mysql:3306/product_db?createDatabaseIfNotExist=true,Database for product catalog information,N/A,Active
+DATABASES,Order Database,mysql,3306,mysql-booksellingapp,MySQL,root/root,jdbc:mysql://mysql:3306/order_db?createDatabaseIfNotExist=true,Database for order and order items,N/A,Active
+DATABASES,Inventory Database,mysql,3306,mysql-booksellingapp,MySQL,root/root,jdbc:mysql://mysql:3306/inventory_db?createDatabaseIfNotExist=true,Database for inventory and reservations,N/A,Active
+DATABASES,Payment Database,mysql,3306,mysql-booksellingapp,MySQL,root/root,jdbc:mysql://mysql:3306/payment_db?createDatabaseIfNotExist=true,Database for payment transactions,N/A,Active
+========================================================================================================================================================================

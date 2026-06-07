@@ -1,0 +1,79 @@
+PS D:\Tech Stack\Projects\BookSellingApp> docker-compose up -d
+time="2026-06-07T14:28:18+05:30" level=warning msg="D:\\Tech Stack\\Projects\\BookSellingApp\\docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+#1 [internal] load local bake definitions
+#1 reading from stdin 3.13kB done
+#1 DONE 0.0s
+
+#2 [inventory-service internal] load build definition from Dockerfile
+#2 transferring dockerfile: 516B 0.0s done
+#2 WARN: FromAsCasing: 'as' and 'FROM' keywords' casing do not match (line 1)
+#2 DONE 0.1s
+
+#3 [payment-service internal] load build definition from Dockerfile
+#3 transferring dockerfile: 506B 0.0s done
+#3 WARN: FromAsCasing: 'as' and 'FROM' keywords' casing do not match (line 1)
+#3 DONE 0.1s
+
+#4 [eureka-server internal] load build definition from Dockerfile
+#4 transferring dockerfile: 437B 0.0s done
+#4 WARN: FromAsCasing: 'as' and 'FROM' keywords' casing do not match (line 1)
+#4 DONE 0.1s
+
+#5 [api-gateway internal] load build definition from Dockerfile
+#5 transferring dockerfile: 427B 0.0s done
+#5 WARN: FromAsCasing: 'as' and 'FROM' keywords' casing do not match (line 1)
+#5 DONE 0.1s
+
+#6 [product-service internal] load build definition from Dockerfile
+#6 transferring dockerfile: 506B 0.0s done
+#6 DONE 0.1s
+
+#7 [eureka-server internal] load metadata for docker.io/library/eclipse-temurin:17-jre-alpine
+#7 ...
+
+#8 [order-service internal] load build definition from Dockerfile
+#8 transferring dockerfile: 494B 0.0s done
+#8 WARN: FromAsCasing: 'as' and 'FROM' keywords' casing do not match (line 1)
+#8 DONE 0.1s
+
+#9 [auth] library/eclipse-temurin:pull token for registry-1.docker.io
+#9 DONE 0.0s
+
+#10 [auth] library/maven:pull token for registry-1.docker.io
+#10 DONE 0.0s
+
+#7 [order-service internal] load metadata for docker.io/library/eclipse-temurin:17-jre-alpine
+#7 ...
+
+#11 [order-service internal] load metadata for docker.io/library/maven:3.9-eclipse-temurin-17
+#11 ERROR: failed to authorize: failed to fetch oauth token: Post "https://auth.docker.io/token": net/http: TLS handshake timeout
+
+#7 [api-gateway internal] load metadata for docker.io/library/eclipse-temurin:17-jre-alpine
+#7 CANCELED
+------
+ > [api-gateway internal] load metadata for docker.io/library/maven:3.9-eclipse-temurin-17:
+------
+[+] up 0/6
+ - Image booksellingapp-order-service     Building                                                                                                                                                                                                         11.3s
+ - Image booksellingapp-eureka-server     Building                                                                                                                                                                                                         11.3s
+ - Image booksellingapp-product-service   Building                                                                                                                                                                                                         11.3s
+ - Image booksellingapp-payment-service   Building                                                                                                                                                                                                         11.3s
+ - Image booksellingapp-api-gateway       Building                                                                                                                                                                                                         11.3s
+ - Image booksellingapp-inventory-service Building                                                                                                                                                                                                         11.3s
+Dockerfile:1
+
+--------------------
+
+   1 | >>> FROM maven:3.9-eclipse-temurin-17 as builder
+
+   2 |     WORKDIR /build
+
+   3 |     COPY pom.xml .
+
+--------------------
+
+target inventory-service: failed to solve: failed to fetch oauth token: Post "https://auth.docker.io/token": net/http: TLS handshake timeout
+
+
+
+View build details: docker-desktop://dashboard/build/default/default/m9c7j1ahfhovsmrhztkcxah4c

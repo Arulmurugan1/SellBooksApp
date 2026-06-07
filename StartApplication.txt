@@ -1,0 +1,32 @@
+How to start the application
+From the project root:
+
+Open a terminal in:
+
+**\BookSellingApp
+Run:
+
+docker-compose up -d
+This will start:
+
+mysql
+zookeeper
+kafka
+eureka-server
+api-gateway
+product-service
+order-service
+inventory-service
+payment-service
+prometheus
+grafana
+Verify it started
+docker-compose ps
+curl http://localhost:8761 → Eureka
+curl http://localhost:8080/actuator/health → API Gateway
+Important URLs
+Eureka: http://localhost:8761
+API Gateway: http://localhost:8080
+Prometheus: http://localhost:9090
+Grafana: http://localhost:3000 (default admin/admin)
+The root docker-compose.yml is the entry point for starting the full application stack.
