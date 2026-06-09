@@ -1,0 +1,164 @@
+{
+  "info": {
+    "name": "Book Selling Application - Complete API Collection",
+    "description": "Comprehensive collection for testing all microservices with direct and API Gateway access",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "gateway_url", "value": "http://localhost:8080" },
+    { "key": "product_url", "value": "http://localhost:8081" },
+    { "key": "order_url", "value": "http://localhost:8082" },
+    { "key": "inventory_url", "value": "http://localhost:8083" },
+    { "key": "payment_url", "value": "http://localhost:8084" },
+    { "key": "orderId", "value": "ORD001" }
+  ],
+  "item": [
+    {
+      "name": "Health Checks",
+      "item": [
+        {
+          "name": "API Gateway Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{gateway_url}}/actuator/health"
+          }
+        },
+        {
+          "name": "Product Service Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{product_url}}/actuator/health"
+          }
+        },
+        {
+          "name": "Order Service Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{order_url}}/actuator/health"
+          }
+        },
+        {
+          "name": "Inventory Service Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{inventory_url}}/actuator/health"
+          }
+        },
+        {
+          "name": "Payment Service Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{payment_url}}/actuator/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Product Service",
+      "item": [
+        {
+          "name": "Get All Products (Direct)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{product_url}}/api/products"
+          }
+        },
+        {
+          "name": "Create Product (Gateway)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productCode\": \"PROD012\",\n  \"title\": \"Design Patterns\",\n  \"description\": \"Elements of Reusable Object-Oriented Software\",\n  \"author\": \"Gang of Four\",\n  \"isbn\": \"978-0201633610\",\n  \"price\": 45.99,\n  \"category\": \"Programming\",\n  \"available\": true\n}"
+            },
+            "url": "{{gateway_url}}/api/products"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Order Service",
+      "item": [
+        {
+          "name": "Create Order (Gateway)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"CUST001\",\n  \"customerEmail\": \"customer@example.com\",\n  \"items\": [\n    {\n      \"productCode\": \"PROD001\",\n      \"quantity\": 1\n    }\n  ]\n}"
+            },
+            "url": "{{gateway_url}}/api/orders"
+          }
+        },
+        {
+          "name": "Get Order By ID (Gateway)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{gateway_url}}/api/orders/{{orderId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Inventory Service",
+      "item": [
+        {
+          "name": "Check Stock (Direct)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 1\n    }\n  ]\n}"
+            },
+            "url": "{{inventory_url}}/api/inventory/check-stock"
+          }
+        },
+        {
+          "name": "Get All Inventory (Gateway)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{gateway_url}}/api/inventory"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payment Service",
+      "item": [
+        {
+          "name": "Get Payment by Order ID (Gateway)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{gateway_url}}/api/payments/order/{{orderId}}"
+          }
+        },
+        {
+          "name": "Get Payment by Transaction ID (Direct)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{payment_url}}/api/payments/transaction/TXN001"
+          }
+        }
+      ]
+    }
+  ]
+}

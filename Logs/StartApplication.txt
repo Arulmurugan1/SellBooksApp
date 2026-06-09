@@ -30,3 +30,9 @@ API Gateway: http://localhost:8080
 Prometheus: http://localhost:9090
 Grafana: http://localhost:3000 (default admin/admin)
 The root docker-compose.yml is the entry point for starting the full application stack.
+
+#Latest
+Eureka Dashboard: http://localhost:8761
+API Gateway: http://localhost:8080
+Prometheus: http://localhost:9090
+Grafana: http://localhost:3000 (admin/adm1n)

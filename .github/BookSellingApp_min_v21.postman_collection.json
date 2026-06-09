@@ -1,0 +1,19 @@
+{
+  "info": {
+    "name": "BookSellingApp Minimal",
+    "_postman_id": "d3f0f0f4-9b93-4cf2-a7b9-7dbf6a6ea001",
+    "description": "Minimal Postman v2.1 collection for import testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "API Gateway Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/actuator/health"
+      },
+      "response": []
+    }
+  ]
+}

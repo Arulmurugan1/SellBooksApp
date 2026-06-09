@@ -1,0 +1,295 @@
+{
+  "info": {
+    "_postman_id": "b2f4f5f2-8a33-4ba2-9d2f-4f5a77f9f101",
+    "name": "BookSellingApp - All Service Controller Operations",
+    "description": "Postman collection covering all controller operations from product-service, order-service, inventory-service, and payment-service.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "gateway_url", "value": "http://localhost:8080" },
+    { "key": "product_service_url", "value": "http://localhost:8081" },
+    { "key": "order_service_url", "value": "http://localhost:8082" },
+    { "key": "inventory_service_url", "value": "http://localhost:8083" },
+    { "key": "payment_service_url", "value": "http://localhost:8084" },
+    { "key": "productId", "value": "1" },
+    { "key": "productCode", "value": "PROD001" },
+    { "key": "orderId", "value": "ORD001" },
+    { "key": "customerId", "value": "CUST001" },
+    { "key": "transactionId", "value": "TXN001" },
+    { "key": "quantityToAdd", "value": "10" }
+  ],
+  "item": [
+    {
+      "name": "Product Controller",
+      "item": [
+        {
+          "name": "GET /api/products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{product_service_url}}/api/products"
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/products/{id}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{product_service_url}}/api/products/{{productId}}"
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/products/code/{productCode}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{product_service_url}}/api/products/code/{{productCode}}"
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/products",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productCode\": \"PROD011\",\n  \"title\": \"Clean Code\",\n  \"description\": \"A Handbook of Agile Software Craftsmanship\",\n  \"author\": \"Robert C. Martin\",\n  \"isbn\": \"978-0132350884\",\n  \"price\": 39.99,\n  \"category\": \"Programming\",\n  \"available\": true\n}"
+            },
+            "url": "{{product_service_url}}/api/products"
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /api/products/{id}",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productCode\": \"PROD011\",\n  \"title\": \"Clean Code Updated\",\n  \"description\": \"Updated description\",\n  \"author\": \"Robert C. Martin\",\n  \"isbn\": \"978-0132350884\",\n  \"price\": 35.99,\n  \"category\": \"Programming\",\n  \"available\": true\n}"
+            },
+            "url": "{{product_service_url}}/api/products/{{productId}}"
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/products/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{product_service_url}}/api/products/{{productId}}"
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/products/check-availability/{productCode}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{product_service_url}}/api/products/check-availability/{{productCode}}"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Order Controller",
+      "item": [
+        {
+          "name": "POST /api/orders",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"CUST001\",\n  \"customerEmail\": \"customer@example.com\",\n  \"items\": [\n    {\n      \"productId\": \"PROD001\",\n      \"productName\": \"Sample Book\",\n      \"quantity\": 2,\n      \"price\": 10.99,\n      \"totalPrice\": 21.98\n    }\n  ]\n}"
+            },
+            "url": "{{order_service_url}}/api/orders"
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/orders/{orderId}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{order_service_url}}/api/orders/{{orderId}}"
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/orders/customer/{customerId}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{order_service_url}}/api/orders/customer/{{customerId}}"
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{order_service_url}}/api/orders"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Inventory Controller",
+      "item": [
+        {
+          "name": "POST /api/inventory/check-stock",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"productId\": \"PROD001\",\n    \"quantity\": 2\n  },\n  {\n    \"productId\": \"PROD002\",\n    \"quantity\": 1\n  }\n]"
+            },
+            "url": "{{inventory_service_url}}/api/inventory/check-stock"
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/inventory/reserve-stock?orderId=...",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"productId\": \"PROD001\",\n    \"quantity\": 2\n  }\n]"
+            },
+            "url": "{{inventory_service_url}}/api/inventory/reserve-stock?orderId={{orderId}}"
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/inventory/release-stock?orderId=...",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"productId\": \"PROD001\",\n    \"quantity\": 2\n  }\n]"
+            },
+            "url": "{{inventory_service_url}}/api/inventory/release-stock?orderId={{orderId}}"
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/inventory/{productId}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{inventory_service_url}}/api/inventory/{{productCode}}"
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/inventory",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{inventory_service_url}}/api/inventory"
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/inventory/low-stock",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{inventory_service_url}}/api/inventory/low-stock"
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /api/inventory/{productId}?quantityToAdd=...",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "{{inventory_service_url}}/api/inventory/{{productCode}}?quantityToAdd={{quantityToAdd}}"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Payment Controller",
+      "item": [
+        {
+          "name": "GET /api/payments/transaction/{transactionId}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{payment_service_url}}/api/payments/transaction/{{transactionId}}"
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/payments/order/{orderId}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{payment_service_url}}/api/payments/order/{{orderId}}"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Gateway Access (Same Operations Through API Gateway)",
+      "item": [
+        {
+          "name": "GET /api/products (gateway)",
+          "request": { "method": "GET", "header": [], "url": "{{gateway_url}}/api/products" },
+          "response": []
+        },
+        {
+          "name": "POST /api/orders (gateway)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"CUST002\",\n  \"customerEmail\": \"gateway@example.com\",\n  \"items\": [\n    {\n      \"productId\": \"PROD001\",\n      \"productName\": \"Sample Book\",\n      \"quantity\": 1,\n      \"price\": 10.99,\n      \"totalPrice\": 10.99\n    }\n  ]\n}"
+            },
+            "url": "{{gateway_url}}/api/orders"
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/inventory (gateway)",
+          "request": { "method": "GET", "header": [], "url": "{{gateway_url}}/api/inventory" },
+          "response": []
+        },
+        {
+          "name": "GET /api/payments/order/{orderId} (gateway)",
+          "request": { "method": "GET", "header": [], "url": "{{gateway_url}}/api/payments/order/{{orderId}}" },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": []
+}

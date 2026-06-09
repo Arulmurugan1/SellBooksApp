@@ -66,7 +66,7 @@ services:
     networks:
       - book-selling-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8761/eureka/"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8761/actuator/health || exit 1"]
       timeout: 20s
       retries: 10
 
@@ -89,7 +89,7 @@ services:
     networks:
       - book-selling-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health || exit 1"]
       timeout: 20s
       retries: 10
 
@@ -115,7 +115,7 @@ services:
     networks:
       - book-selling-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8081/actuator/health || exit 1"]
       timeout: 20s
       retries: 10
 
@@ -141,10 +141,11 @@ services:
       SPRING_DATASOURCE_PASSWORD: root
       SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: kafka:9092
       SPRING_CLOUD_CONFIG_ENABLED: "false"
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
     networks:
       - book-selling-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8082/actuator/health || exit 1"]
       timeout: 20s
       retries: 10
 
@@ -167,10 +168,11 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
       SPRING_CLOUD_CONFIG_ENABLED: "false"
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
     networks:
       - book-selling-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8083/actuator/health || exit 1"]
       timeout: 20s
       retries: 10
 
@@ -196,10 +198,11 @@ services:
       SPRING_DATASOURCE_PASSWORD: root
       SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: kafka:9092
       SPRING_CLOUD_CONFIG_ENABLED: "false"
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
     networks:
       - book-selling-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8084/actuator/health"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8084/actuator/health || exit 1"]
       timeout: 20s
       retries: 10
 
