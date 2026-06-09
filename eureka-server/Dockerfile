@@ -11,4 +11,4 @@ RUN mkdir -p /root/.m2/repository/com/booksellingapp/book-selling-app/1.0.0 && \
 
 EXPOSE 8761
 
-CMD ["mvn", "-pl", "eureka-server", "-am", "clean", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-Dspring.devtools.restart.enabled=true"]
+CMD ["mvn", "-f", "eureka-server/pom.xml", "spring-boot:run"]

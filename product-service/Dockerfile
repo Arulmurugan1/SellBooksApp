@@ -12,4 +12,4 @@ RUN mkdir -p /root/.m2/repository/com/booksellingapp/book-selling-app/1.0.0 && \
 
 EXPOSE 8081
 
-CMD ["mvn", "-pl", "product-service", "-am", "clean", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-Dspring.devtools.restart.enabled=true"]
+CMD ["mvn", "-pl", "product-service", "-am", "clean", "spring-boot:run"]

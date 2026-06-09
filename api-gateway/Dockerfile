@@ -15,4 +15,4 @@ RUN mkdir -p /root/.m2/repository/com/booksellingapp/book-selling-app/1.0.0 && \
 EXPOSE 8080
 
 # Run from root reactor so upstream modules are rebuilt and latest source is used.
-CMD ["mvn", "-pl", "api-gateway", "-am", "clean", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-Dspring.devtools.restart.enabled=true"]
+CMD ["sh", "-c", "mvn -f common-library/pom.xml clean install -DskipTests -q && mvn -f api-gateway/pom.xml spring-boot:run"]
