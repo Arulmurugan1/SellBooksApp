@@ -9,17 +9,13 @@ import java.util.List;
 public interface InventoryServiceClient {
 
     @PostMapping("/api/inventory/check-stock")
-    StockCheckResponse checkStock(@RequestBody StockCheckRequest request);
+        StockCheckResponse checkStock(@RequestBody List<StockItem> requests);
 
     @PostMapping("/api/inventory/reserve-stock")
-    void reserveStock(@RequestBody ReserveStockRequest request);
+        ReservationResponse reserveStock(@RequestParam String orderId, @RequestBody List<ReservationItem> requests);
 
     @PostMapping("/api/inventory/release-stock")
-    void releaseStock(@RequestBody ReleaseStockRequest request);
-
-    record StockCheckRequest(
-            List<StockItem> items
-    ) {}
+        ReleaseResponse releaseStock(@RequestParam String orderId, @RequestBody List<ReleaseItem> requests);
 
     record StockItem(
             String productId,
@@ -37,23 +33,19 @@ public interface InventoryServiceClient {
             Integer availableQuantity
     ) {}
 
-    record ReserveStockRequest(
-            String orderId,
-            List<ReservationItem> items
-    ) {}
-
     record ReservationItem(
             String productId,
             Integer quantity
-    ) {}
-
-    record ReleaseStockRequest(
-            String orderId,
-            List<ReleaseItem> items
     ) {}
 
     record ReleaseItem(
             String productId,
             Integer quantity
     ) {}
+
+    record ReservationDetail(String productId, Integer quantity, Integer quantityAvailable, Integer quantityReserved) {}
+    record ReservationResponse(String orderId, String status, List<ReservationDetail> details) {}
+
+    record ReleaseDetail(String productId, Integer quantity, Integer quantityAvailable) {}
+    record ReleaseResponse(String orderId, String status, List<ReleaseDetail> details) {}
 }

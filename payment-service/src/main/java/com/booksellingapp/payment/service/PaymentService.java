@@ -99,6 +99,17 @@ public class PaymentService {
     }
 
     /**
+     * Get all payments
+     */
+    @Transactional(readOnly = true)
+    public java.util.List<PaymentDTO> getAllPayments() {
+        log.info("Fetching all payments");
+        return paymentRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    /**
      * Get payment by transaction ID
      */
     @Transactional(readOnly = true)

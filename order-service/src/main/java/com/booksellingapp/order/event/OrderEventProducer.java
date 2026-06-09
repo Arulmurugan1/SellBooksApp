@@ -28,6 +28,7 @@ public class OrderEventProducer {
         log.info("Publishing OrderCancelledEvent for orderId: {}", orderId);
         streamBridge.send("orderCancelled-out-0", 
             new OrderCancelledEvent(orderId, reason, System.currentTimeMillis()));
+        log.info("OrderCancelledEvent published for orderId: {}", orderId);
     }
 
     public record OrderCancelledEvent(

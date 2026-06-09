@@ -4,7 +4,6 @@ import com.booksellingapp.inventory.dto.InventoryDTO;
 import com.booksellingapp.inventory.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,24 +32,24 @@ public class InventoryController {
      * Reserve stock
      */
     @PostMapping("/reserve-stock")
-    public ResponseEntity<Void> reserveStock(
+    public ResponseEntity<InventoryService.ReservationResponse> reserveStock(
             @RequestParam String orderId,
             @RequestBody List<InventoryService.ReservationRequest> requests) {
         log.info("POST request: /api/inventory/reserve-stock for orderId: {}", orderId);
-        inventoryService.reserveStock(orderId, requests);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        InventoryService.ReservationResponse response = inventoryService.reserveStock(orderId, requests);
+        return ResponseEntity.ok(response);
     }
 
     /**
      * Release reserved stock
      */
     @PostMapping("/release-stock")
-    public ResponseEntity<Void> releaseStock(
+    public ResponseEntity<InventoryService.ReleaseResponse> releaseStock(
             @RequestParam String orderId,
             @RequestBody List<InventoryService.ReleaseRequest> requests) {
         log.info("POST request: /api/inventory/release-stock for orderId: {}", orderId);
-        inventoryService.releaseStock(orderId, requests);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        InventoryService.ReleaseResponse response = inventoryService.releaseStock(orderId, requests);
+        return ResponseEntity.ok(response);
     }
 
     /**

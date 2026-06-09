@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/payments")
 @RequiredArgsConstructor
@@ -14,6 +16,16 @@ import org.springframework.web.bind.annotation.*;
 public class PaymentController {
 
     private final PaymentService paymentService;
+
+    /**
+     * Get all payments
+     */
+    @GetMapping
+    public ResponseEntity<List<PaymentDTO>> getAllPayments() {
+        log.info("GET request: /api/payments");
+        List<PaymentDTO> payments = paymentService.getAllPayments();
+        return ResponseEntity.ok(payments);
+    }
 
     /**
      * Get payment by transaction ID

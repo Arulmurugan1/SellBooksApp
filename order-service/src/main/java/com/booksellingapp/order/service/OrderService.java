@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,10 +41,15 @@ public class OrderService {
     @CircuitBreaker(name = "orderService", fallbackMethod = "createOrderFallback")
     @Retry(name = "orderService")
     public OrderDTO createOrder(OrderDTO orderDTO) {
+        
         log.info("Creating order for customer: {}", orderDTO.getCustomerId());
+        log.info("OrderDTO received: {}", orderDTO);
 
         // Step 1: Create order with PENDING status
         String orderId = UUID.randomUUID().toString();
+
+        log.info("Generated orderId: {}", orderId);
+
         Order order = Order.builder()
                 .orderId(orderId)
                 .customerId(orderDTO.getCustomerId())
@@ -54,9 +58,18 @@ public class OrderService {
                 .status(Order.OrderStatus.PENDING)
                 .build();
 
+
+        log.info("Order entity created with orderId: {} - Status: {}", order.getOrderId(), order.getStatus());
+
+        // Persist first to get generated DB id used by order_items.order_id
+        order = orderRepository.save(order);
+        log.info("Order persisted with id: {} and orderId: {}", order.getId(), order.getOrderId());
+        
         // Step 2: Validate products and calculate total
         List<OrderItem> orderItems = new ArrayList<>();
         BigDecimal totalAmount = BigDecimal.ZERO;
+
+        log.info("Validating products and calculating total for orderId: {}", orderId);
 
         for (OrderDTO.OrderItemDTO itemDTO : orderDTO.getItems()) {
             // Synchronous call to Product Service
@@ -64,6 +77,7 @@ public class OrderService {
                 productServiceClient.getProductByCode(itemDTO.getProductId());
 
             if (!product.available()) {
+                log.error("Product not available: {}", itemDTO.getProductId());
                 throw new RuntimeException("Product not available: " + itemDTO.getProductId());
             }
 
@@ -78,20 +92,34 @@ public class OrderService {
 
             orderItems.add(orderItem);
             totalAmount = totalAmount.add(orderItem.getTotalPrice());
+
+            log.info("Order item added: {} - Quantity: {} - Total Price: {}",
+                    orderItem.getProductId(), orderItem.getQuantity(), orderItem.getTotalPrice());
         }
 
         order.setItems(orderItems);
         order.setTotalAmount(totalAmount);
 
+        log.info("Total amount calculated for orderId: {} - Total Amount: {}", orderId, totalAmount);
+        log.info("Order entity before inventory check: {}", order);
+
+        log.info("Product validation and total calculation completed for orderId: {}", orderId);
+
         // Step 3: Check and reserve inventory (Synchronous)
         checkAndReserveInventory(order);
+
+        log.info("Order entity after inventory reservation: {}", order);
 
         // Save order
         Order savedOrder = orderRepository.save(order);
         log.info("Order created successfully with orderId: {}", savedOrder.getOrderId());
 
+        log.info("Saved Order entity: {}", savedOrder);
+
         // Step 4: Publish event for asynchronous payment processing
         publishOrderCreatedEvent(savedOrder);
+
+        log.info("Order created event published for orderId: {}", savedOrder.getOrderId());
 
         return convertToDTO(savedOrder);
     }
@@ -118,16 +146,21 @@ public class OrderService {
                 ))
                 .collect(Collectors.toList());
 
-        InventoryServiceClient.StockCheckRequest checkRequest =
-                new InventoryServiceClient.StockCheckRequest(stockItems);
+        log.info("Stock check request prepared for orderId: {} - Stock Items: {}", order.getOrderId(), stockItems);
 
         // Check stock availability
         InventoryServiceClient.StockCheckResponse checkResponse =
-                inventoryServiceClient.checkStock(checkRequest);
+                inventoryServiceClient.checkStock(stockItems);
+
+        log.info("Stock check response for orderId: {} - All Items Available: {}, Details: {}",
+                order.getOrderId(), checkResponse.allItemsAvailable(), checkResponse.details());
 
         if (!checkResponse.allItemsAvailable()) {
+            log.error("Insufficient inventory for orderId: {} - Details: {}", order.getOrderId(), checkResponse.details());
             throw new RuntimeException("Insufficient inventory for some items");
         }
+
+        log.info("Stock available for all items in orderId: {}", order.getOrderId());
 
         // Reserve stock
         List<InventoryServiceClient.ReservationItem> reservationItems = order.getItems().stream()
@@ -137,11 +170,9 @@ public class OrderService {
                 ))
                 .collect(Collectors.toList());
 
-        InventoryServiceClient.ReserveStockRequest reserveRequest =
-                new InventoryServiceClient.ReserveStockRequest(order.getOrderId(), reservationItems);
+        log.info("Reservation request prepared for orderId: {} - Reservation Items: {}", order.getOrderId(), reservationItems);
 
-        inventoryServiceClient.reserveStock(reserveRequest);
-
+        inventoryServiceClient.reserveStock(order.getOrderId(), reservationItems);
         // Update order status
         order.setStatus(Order.OrderStatus.INVENTORY_RESERVED);
         log.info("Inventory reserved for orderId: {}", order.getOrderId());
@@ -151,6 +182,7 @@ public class OrderService {
      * Publish order created event for payment processing (Asynchronous)
      */
     private void publishOrderCreatedEvent(Order order) {
+        log.info("Publishing order created event for orderId: {}", order.getOrderId());
         OrderCreatedEvent event = OrderCreatedEvent.builder()
                 .orderId(order.getOrderId())
                 .customerId(order.getCustomerId())
@@ -168,6 +200,7 @@ public class OrderService {
                 .build();
 
         orderEventProducer.publishOrderCreatedEvent(event);
+        log.info("Order created event published for orderId: {}", order.getOrderId());
     }
 
     /**
@@ -204,11 +237,8 @@ public class OrderService {
                 ))
                 .collect(Collectors.toList());
 
-        InventoryServiceClient.ReleaseStockRequest releaseRequest =
-                new InventoryServiceClient.ReleaseStockRequest(orderId, releaseItems);
-
         try {
-            inventoryServiceClient.releaseStock(releaseRequest);
+            inventoryServiceClient.releaseStock(orderId, releaseItems);
         } catch (Exception ex) {
             log.error("Failed to release inventory for orderId: {}", orderId, ex);
         }

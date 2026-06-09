@@ -55,8 +55,10 @@ public class InventoryService {
      * Reserve stock for an order
      */
     @Transactional
-    public void reserveStock(String orderId, List<ReservationRequest> requests) {
+    public ReservationResponse reserveStock(String orderId, List<ReservationRequest> requests) {
         log.info("Reserving stock for orderId: {}", orderId);
+
+        List<ReservationDetail> details = new java.util.ArrayList<>();
 
         for (ReservationRequest request : requests) {
             Inventory inventory = inventoryRepository.findByProductId(request.productId())
@@ -70,7 +72,7 @@ public class InventoryService {
             inventory.setQuantityAvailable(inventory.getQuantityAvailable() - request.quantity());
             // Increase reserved quantity
             inventory.setQuantityReserved(inventory.getQuantityReserved() + request.quantity());
-            inventoryRepository.save(inventory);
+            Inventory saved = inventoryRepository.save(inventory);
 
             // Create reservation record
             InventoryReservation reservation = InventoryReservation.builder()
@@ -81,19 +83,29 @@ public class InventoryService {
                     .build();
             reservationRepository.save(reservation);
 
+            details.add(new ReservationDetail(
+                    request.productId(),
+                    request.quantity(),
+                    saved.getQuantityAvailable(),
+                    saved.getQuantityReserved()
+            ));
+
             log.debug("Stock reserved for orderId: {}, productId: {}, quantity: {}",
                     orderId, request.productId(), request.quantity());
         }
 
         log.info("Stock reservation completed for orderId: {}", orderId);
+        return new ReservationResponse(orderId, "RESERVED", details);
     }
 
     /**
      * Release reserved stock (compensation transaction in saga)
      */
     @Transactional
-    public void releaseStock(String orderId, List<ReleaseRequest> requests) {
+    public ReleaseResponse releaseStock(String orderId, List<ReleaseRequest> requests) {
         log.info("Releasing reserved stock for orderId: {}", orderId);
+
+        List<ReleaseDetail> details = new java.util.ArrayList<>();
 
         for (ReleaseRequest request : requests) {
             Inventory inventory = inventoryRepository.findByProductId(request.productId())
@@ -103,7 +115,7 @@ public class InventoryService {
             inventory.setQuantityAvailable(inventory.getQuantityAvailable() + request.quantity());
             // Decrease reserved quantity
             inventory.setQuantityReserved(inventory.getQuantityReserved() - request.quantity());
-            inventoryRepository.save(inventory);
+            Inventory saved = inventoryRepository.save(inventory);
 
             // Update reservation record
             List<InventoryReservation> reservations = reservationRepository.findByOrderId(orderId);
@@ -114,11 +126,18 @@ public class InventoryService {
                 }
             }
 
+            details.add(new ReleaseDetail(
+                    request.productId(),
+                    request.quantity(),
+                    saved.getQuantityAvailable()
+            ));
+
             log.debug("Stock released for orderId: {}, productId: {}, quantity: {}",
                     orderId, request.productId(), request.quantity());
         }
 
         log.info("Stock release completed for orderId: {}", orderId);
+        return new ReleaseResponse(orderId, "RELEASED", details);
     }
 
     /**
@@ -168,8 +187,14 @@ public class InventoryService {
         inventory.setQuantityAvailable(inventory.getQuantityAvailable() + quantityToAdd);
         inventory.setLastRestockDate(LocalDateTime.now());
 
+        log.debug("Inventory before update for productId: {} - Available: {}, Reserved: {}",
+                productId, inventory.getQuantityAvailable(), inventory.getQuantityReserved());
+
         Inventory updatedInventory = inventoryRepository.save(inventory);
         log.info("Inventory updated for productId: {}", productId);
+
+        log.debug("Inventory after update for productId: {} - Available: {}, Reserved: {}",
+                productId, updatedInventory.getQuantityAvailable(), updatedInventory.getQuantityReserved());
 
         return convertToDTO(updatedInventory);
     }
@@ -195,4 +220,10 @@ public class InventoryService {
     public record StockCheckDetail(String productId, boolean available, Integer availableQuantity) {}
     public record ReservationRequest(String productId, Integer quantity) {}
     public record ReleaseRequest(String productId, Integer quantity) {}
+
+    public record ReservationDetail(String productId, Integer quantity, Integer quantityAvailable, Integer quantityReserved) {}
+    public record ReservationResponse(String orderId, String status, List<ReservationDetail> details) {}
+
+    public record ReleaseDetail(String productId, Integer quantity, Integer quantityAvailable) {}
+    public record ReleaseResponse(String orderId, String status, List<ReleaseDetail> details) {}
 }

@@ -57,7 +57,11 @@ services:
     build:
       context: .
       dockerfile: ./eureka-server/Dockerfile
+      no_cache: true
     container_name: eureka-server-app
+    volumes:
+      - ./:/build
+      - maven-cache:/root/.m2
     ports:
       - "8761:8761"
     environment:
@@ -75,9 +79,13 @@ services:
     build:
       context: .
       dockerfile: ./api-gateway/Dockerfile
+      no_cache: true
     container_name: api-gateway-app
     ports:
       - "8080:8080"
+    volumes:
+      - ./:/build
+      - maven-cache:/root/.m2
     depends_on:
       eureka-server:
         condition: service_healthy
@@ -98,7 +106,11 @@ services:
     build:
       context: .
       dockerfile: ./product-service/Dockerfile
+      no_cache: true
     container_name: product-service-app
+    volumes:
+      - ./:/build
+      - maven-cache:/root/.m2
     ports:
       - "8081:8081"
     depends_on:
@@ -124,7 +136,11 @@ services:
     build:
       context: .
       dockerfile: ./order-service/Dockerfile
+      no_cache: true
     container_name: order-service-app
+    volumes:
+      - ./:/build
+      - maven-cache:/root/.m2
     ports:
       - "8082:8082"
     depends_on:
@@ -154,7 +170,11 @@ services:
     build:
       context: .
       dockerfile: ./inventory-service/Dockerfile
+      no_cache: true
     container_name: inventory-service-app
+    volumes:
+      - ./:/build
+      - maven-cache:/root/.m2
     ports:
       - "8083:8083"
     depends_on:
@@ -181,7 +201,11 @@ services:
     build:
       context: .
       dockerfile: ./payment-service/Dockerfile
+      no_cache: true
     container_name: payment-service-app
+    volumes:
+      - ./:/build
+      - maven-cache:/root/.m2
     ports:
       - "8084:8084"
     depends_on:
@@ -221,6 +245,33 @@ services:
     networks:
       - book-selling-network
 
+  # Loki - Log aggregation backend
+  loki:
+    image: grafana/loki:2.9.0
+    container_name: loki-booksellingapp
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./docker/loki-config.yml:/etc/loki/local-config.yaml
+      - loki-data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - book-selling-network
+
+  # Promtail - Log collector (scrapes Docker container logs and ships to Loki)
+  promtail:
+    image: grafana/promtail:2.9.0
+    container_name: promtail-booksellingapp
+    volumes:
+      - ./docker/promtail-config.yml:/etc/promtail/config.yml
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+    networks:
+      - book-selling-network
+
   # Grafana for Visualization
   grafana:
     image: grafana/grafana:latest
@@ -231,15 +282,19 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: admin
     volumes:
       - grafana-data:/var/lib/grafana
+      - ./docker/grafana-provisioning:/etc/grafana/provisioning
     networks:
       - book-selling-network
     depends_on:
       - prometheus
+      - loki
 
 volumes:
   mysql-data:
   prometheus-data:
   grafana-data:
+  loki-data:
+  maven-cache:
 
 networks:
   book-selling-network:

@@ -7,7 +7,7 @@ spring:
         - id: product-service
           uri: lb://product-service
           predicates:
-            - Path=/api/products/**
+            - Path=/api/products,/api/products/**
           filters:
             - name: CircuitBreaker
               args:
@@ -16,7 +16,7 @@ spring:
         - id: order-service
           uri: lb://order-service
           predicates:
-            - Path=/api/orders/**
+            - Path=/api/orders,/api/orders/**
           filters:
             - name: CircuitBreaker
               args:
@@ -25,7 +25,7 @@ spring:
         - id: inventory-service
           uri: lb://inventory-service
           predicates:
-            - Path=/api/inventory/**
+            - Path=/api/inventory,/api/inventory/**
           filters:
             - name: CircuitBreaker
               args:
@@ -34,7 +34,7 @@ spring:
         - id: payment-service
           uri: lb://payment-service
           predicates:
-            - Path=/api/payments/**
+            - Path=/api/payments,/api/payments/**
           filters:
             - name: CircuitBreaker
               args:

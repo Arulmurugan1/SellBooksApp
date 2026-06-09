@@ -1,15 +1,15 @@
-FROM maven:3.9-eclipse-temurin-17 as builder
+FROM maven:3.9-eclipse-temurin-17
 WORKDIR /build
+
 COPY pom.xml .
-COPY product-service ./product-service
 COPY common-library ./common-library
+COPY product-service ./product-service
+
 RUN mkdir -p /root/.m2/repository/com/booksellingapp/book-selling-app/1.0.0 && \
     cp pom.xml /root/.m2/repository/com/booksellingapp/book-selling-app/1.0.0/book-selling-app-1.0.0.pom && \
-    mvn -f common-library/pom.xml clean install -DskipTests && \
-    mvn -f product-service/pom.xml clean package -DskipTests
+    mvn -f common-library/pom.xml clean install -DskipTests -q && \
+    mvn -f product-service/pom.xml dependency:resolve -DskipTests -q
 
-FROM eclipse-temurin:17-jre-alpine
-WORKDIR /app
-COPY --from=builder /build/product-service/target/product-service-1.0.0.jar app.jar
 EXPOSE 8081
-ENTRYPOINT ["java", "-jar", "app.jar"]
+
+CMD ["mvn", "-pl", "product-service", "-am", "clean", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-Dspring.devtools.restart.enabled=true"]

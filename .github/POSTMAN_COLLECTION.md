@@ -358,7 +358,7 @@ This document contains a complete Postman collection JSON for testing the Book S
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"customerId\": \"CUST001\",\n  \"customerEmail\": \"customer@example.com\",\n  \"items\": [\n    {\n      \"productCode\": \"PROD001\",\n      \"quantity\": 2\n    },\n    {\n      \"productCode\": \"PROD002\",\n      \"quantity\": 1\n    }\n  ]\n}"
+                  "raw": "{\n  \"customerId\": \"CUST001\",\n  \"customerEmail\": \"customer@example.com\",\n  \"items\": [\n    {\n      \"productId\": \"PROD001\",\n      \"quantity\": 2\n    },\n    {\n      \"productId\": \"PROD002\",\n      \"quantity\": 1\n    }\n  ]\n}"
                 },
                 "url": {
                   "raw": "http://localhost:8082/api/orders",
@@ -432,7 +432,7 @@ This document contains a complete Postman collection JSON for testing the Book S
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"customerId\": \"CUST002\",\n  \"customerEmail\": \"john.doe@example.com\",\n  \"items\": [\n    {\n      \"productCode\": \"PROD003\",\n      \"quantity\": 3\n    }\n  ]\n}"
+                  "raw": "{\n  \"customerId\": \"CUST002\",\n  \"customerEmail\": \"john.doe@example.com\",\n  \"items\": [\n    {\n      \"productId\": \"PROD003\",\n      \"quantity\": 3\n    }\n  ]\n}"
                 },
                 "url": {
                   "raw": "http://localhost:8080/api/orders",
@@ -763,7 +763,7 @@ This document contains a complete Postman collection JSON for testing the Book S
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customerId\": \"CUST_SAGA_TEST\",\n  \"customerEmail\": \"saga.test@example.com\",\n  \"items\": [\n    {\n      \"productCode\": \"PROD001\",\n      \"quantity\": 1\n    },\n    {\n      \"productCode\": \"PROD002\",\n      \"quantity\": 2\n    }\n  ]\n}"
+              "raw": "{\n  \"customerId\": \"CUST_SAGA_TEST\",\n  \"customerEmail\": \"saga.test@example.com\",\n  \"items\": [\n    {\n      \"productId\": \"PROD001\",\n      \"quantity\": 1\n    },\n    {\n      \"productId\": \"PROD002\",\n      \"quantity\": 2\n    }\n  ]\n}"
             },
             "url": {
               "raw": "http://localhost:8080/api/orders",
@@ -900,7 +900,7 @@ This document contains a complete Postman collection JSON for testing the Book S
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customerId\": \"CUST_SUCCESS\",\n  \"customerEmail\": \"success@example.com\",\n  \"items\": [\n    {\n      \"productCode\": \"PROD001\",\n      \"quantity\": 1\n    }\n  ]\n}\n\n**Expected Flow:**\n1. Order created with PENDING status\n2. Product availability checked ✓\n3. Inventory reserved ✓\n4. Payment processed (70% success rate)\n5. Order status → CONFIRMED\n6. Inventory remains reserved"
+              "raw": "{\n  \"customerId\": \"CUST_SUCCESS\",\n  \"customerEmail\": \"success@example.com\",\n  \"items\": [\n    {\n      \"productId\": \"PROD001\",\n      \"quantity\": 1\n    }\n  ]\n}\n\n**Expected Flow:**\n1. Order created with PENDING status\n2. Product availability checked ✓\n3. Inventory reserved ✓\n4. Payment processed (70% success rate)\n5. Order status → CONFIRMED\n6. Inventory remains reserved"
             },
             "url": {
               "raw": "http://localhost:8080/api/orders",
@@ -924,7 +924,7 @@ This document contains a complete Postman collection JSON for testing the Book S
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customerId\": \"CUST_FAILURE\",\n  \"customerEmail\": \"failure@example.com\",\n  \"items\": [\n    {\n      \"productCode\": \"PROD002\",\n      \"quantity\": 1\n    }\n  ]\n}\n\n**Expected Flow (30% of attempts):**\n1. Order created with PENDING status\n2. Product availability checked ✓\n3. Inventory reserved ✓\n4. Payment processing fails ✗\n5. COMPENSATION: Inventory released\n6. Order status → PAYMENT_FAILED\n7. Event published: order-cancelled"
+              "raw": "{\n  \"customerId\": \"CUST_FAILURE\",\n  \"customerEmail\": \"failure@example.com\",\n  \"items\": [\n    {\n      \"productId\": \"PROD002\",\n      \"quantity\": 1\n    }\n  ]\n}\n\n**Expected Flow (30% of attempts):**\n1. Order created with PENDING status\n2. Product availability checked ✓\n3. Inventory reserved ✓\n4. Payment processing fails ✗\n5. COMPENSATION: Inventory released\n6. Order status → PAYMENT_FAILED\n7. Event published: order-cancelled"
             },
             "url": {
               "raw": "http://localhost:8080/api/orders",
@@ -948,7 +948,7 @@ This document contains a complete Postman collection JSON for testing the Book S
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customerId\": \"CUST_BULK\",\n  \"customerEmail\": \"bulk@example.com\",\n  \"items\": [\n    {\n      \"productCode\": \"PROD001\",\n      \"quantity\": 3\n    },\n    {\n      \"productCode\": \"PROD002\",\n      \"quantity\": 2\n    },\n    {\n      \"productCode\": \"PROD003\",\n      \"quantity\": 1\n    }\n  ]\n}"
+              "raw": "{\n  \"customerId\": \"CUST_BULK\",\n  \"customerEmail\": \"bulk@example.com\",\n  \"items\": [\n    {\n      \"productId\": \"PROD001\",\n      \"quantity\": 3\n    },\n    {\n      \"productId\": \"PROD002\",\n      \"quantity\": 2\n    },\n    {\n      \"productId\": \"PROD003\",\n      \"quantity\": 1\n    }\n  ]\n}"
             },
             "url": {
               "raw": "http://localhost:8080/api/orders",
@@ -1007,7 +1007,7 @@ This document contains a complete Postman collection JSON for testing the Book S
               "port": "8080",
               "path": ["api", "products"]
             },
-            "description": "Verify product service is accessible. Note a productCode for order creation."
+            "description": "Verify product service is accessible. Note a productId for order creation."
           }
         },
         {
@@ -1022,7 +1022,7 @@ This document contains a complete Postman collection JSON for testing the Book S
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customerId\": \"QUICK_TEST\",\n  \"customerEmail\": \"quicktest@example.com\",\n  \"items\": [\n    {\n      \"productCode\": \"PROD001\",\n      \"quantity\": 1\n    }\n  ]\n}"
+              "raw": "{\n  \"customerId\": \"QUICK_TEST\",\n  \"customerEmail\": \"quicktest@example.com\",\n  \"items\": [\n    {\n      \"productId\": \"PROD001\",\n      \"quantity\": 1\n    }\n  ]\n}"
             },
             "url": {
               "raw": "http://localhost:8080/api/orders",
