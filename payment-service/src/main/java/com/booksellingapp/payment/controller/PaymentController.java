@@ -5,6 +5,7 @@ import com.booksellingapp.payment.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class PaymentController {
     /**
      * Get all payments
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<List<PaymentDTO>> getAllPayments() {
         log.info("GET request: /api/payments");
@@ -30,6 +32,7 @@ public class PaymentController {
     /**
      * Get payment by transaction ID
      */
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     @GetMapping("/transaction/{transactionId}")
     public ResponseEntity<PaymentDTO> getPaymentByTransactionId(@PathVariable String transactionId) {
         log.info("GET request: /api/payments/transaction/{}", transactionId);
@@ -40,6 +43,7 @@ public class PaymentController {
     /**
      * Get payment by order ID
      */
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     @GetMapping("/order/{orderId}")
     public ResponseEntity<PaymentDTO> getPaymentByOrderId(@PathVariable String orderId) {
         log.info("GET request: /api/payments/order/{}", orderId);

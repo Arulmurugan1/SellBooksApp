@@ -1,0 +1,326 @@
+{
+  "info": {
+    "name": "BookSellingApp - Spring Security JWT",
+    "_postman_id": "bsa-spring-security-jwt",
+    "description": "Complete API collection. Run Login to auto-save {{token}}.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8080", "type": "string" },
+    { "key": "token",    "value": "",                      "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/auth/register", "host": ["{{base_url}}"], "path": ["api","auth","register"] },
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"john\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}" }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "var json = pm.response.json();",
+                "if (json.token) { pm.collectionVariables.set('token', json.token); }"
+              ],
+              "type": "text/javascript"
+            }
+          }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/auth/login", "host": ["{{base_url}}"], "path": ["api","auth","login"] },
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"john\",\n  \"password\": \"password123\"\n}" }
+          }
+        },
+        {
+          "name": "Register Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/auth/register", "host": ["{{base_url}}"], "path": ["api","auth","register"] },
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"admin\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"admin123\"\n}" }
+          }
+        },
+        {
+          "name": "Login Admin",
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "var json = pm.response.json();",
+                "if (json.token) { pm.collectionVariables.set('token', json.token); }"
+              ],
+              "type": "text/javascript"
+            }
+          }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/auth/login", "host": ["{{base_url}}"], "path": ["api","auth","login"] },
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get Current User (me)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/users/me", "host": ["{{base_url}}"], "path": ["api","users","me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/products", "host": ["{{base_url}}"], "path": ["api","products"] }
+          }
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/products/1", "host": ["{{base_url}}"], "path": ["api","products","1"] }
+          }
+        },
+        {
+          "name": "Get Product by Code",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/products/code/PROD001", "host": ["{{base_url}}"], "path": ["api","products","code","PROD001"] }
+          }
+        },
+        {
+          "name": "Create Product (ADMIN only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/api/products", "host": ["{{base_url}}"], "path": ["api","products"] },
+            "body": { "mode": "raw", "raw": "{\n  \"productCode\": \"PROD011\",\n  \"title\": \"Clean Code\",\n  \"author\": \"Robert C. Martin\",\n  \"isbn\": \"978-0132350884\",\n  \"price\": 24.99,\n  \"category\": \"Technology\",\n  \"available\": true\n}" }
+          }
+        },
+        {
+          "name": "Update Product (ADMIN only)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/api/products/1", "host": ["{{base_url}}"], "path": ["api","products","1"] },
+            "body": { "mode": "raw", "raw": "{\n  \"productCode\": \"PROD001\",\n  \"title\": \"The Great Gatsby\",\n  \"author\": \"F. Scott Fitzgerald\",\n  \"isbn\": \"978-0743273565\",\n  \"price\": 12.99,\n  \"category\": \"Fiction\",\n  \"available\": true\n}" }
+          }
+        },
+        {
+          "name": "Delete Product (ADMIN only)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/products/11", "host": ["{{base_url}}"], "path": ["api","products","11"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Get All Orders (ADMIN only)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/orders", "host": ["{{base_url}}"], "path": ["api","orders"] }
+          }
+        },
+        {
+          "name": "Get Order by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/orders/ORD-001", "host": ["{{base_url}}"], "path": ["api","orders","ORD-001"] }
+          }
+        },
+        {
+          "name": "Get Orders by Customer",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/orders/customer/CUST-001", "host": ["{{base_url}}"], "path": ["api","orders","customer","CUST-001"] }
+          }
+        },
+        {
+          "name": "Create Order (USER)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/api/orders", "host": ["{{base_url}}"], "path": ["api","orders"] },
+            "body": { "mode": "raw", "raw": "{\n  \"customerId\": \"CUST-001\",\n  \"customerEmail\": \"john@example.com\",\n  \"items\": [\n    {\n      \"productId\": \"PROD001\",\n      \"productName\": \"The Great Gatsby\",\n      \"quantity\": 1,\n      \"price\": 10.99\n    }\n  ]\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Inventory",
+      "item": [
+        {
+          "name": "Get All Inventory (ADMIN only)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/inventory", "host": ["{{base_url}}"], "path": ["api","inventory"] }
+          }
+        },
+        {
+          "name": "Get Inventory by Product ID (ADMIN only)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/inventory/PROD001", "host": ["{{base_url}}"], "path": ["api","inventory","PROD001"] }
+          }
+        },
+        {
+          "name": "Get Low Stock Items (ADMIN only)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/inventory/low-stock", "host": ["{{base_url}}"], "path": ["api","inventory","low-stock"] }
+          }
+        },
+        {
+          "name": "Check Stock (ADMIN only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/api/inventory/check-stock", "host": ["{{base_url}}"], "path": ["api","inventory","check-stock"] },
+            "body": { "mode": "raw", "raw": "[\n  { \"productId\": \"PROD001\", \"quantity\": 2 },\n  { \"productId\": \"PROD002\", \"quantity\": 1 }\n]" }
+          }
+        },
+        {
+          "name": "Reserve Stock (ADMIN only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/reserve-stock?orderId=ORD-NEW",
+              "host": ["{{base_url}}"],
+              "path": ["api","inventory","reserve-stock"],
+              "query": [{ "key": "orderId", "value": "ORD-NEW" }]
+            },
+            "body": { "mode": "raw", "raw": "[\n  { \"productId\": \"PROD001\", \"quantity\": 1 }\n]" }
+          }
+        },
+        {
+          "name": "Release Stock (ADMIN only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/release-stock?orderId=ORD-NEW",
+              "host": ["{{base_url}}"],
+              "path": ["api","inventory","release-stock"],
+              "query": [{ "key": "orderId", "value": "ORD-NEW" }]
+            },
+            "body": { "mode": "raw", "raw": "[\n  { \"productId\": \"PROD001\", \"quantity\": 1 }\n]" }
+          }
+        },
+        {
+          "name": "Update Inventory Quantity (ADMIN only)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/PROD001?quantityToAdd=10",
+              "host": ["{{base_url}}"],
+              "path": ["api","inventory","PROD001"],
+              "query": [{ "key": "quantityToAdd", "value": "10" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Get All Payments (ADMIN only)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/payments", "host": ["{{base_url}}"], "path": ["api","payments"] }
+          }
+        },
+        {
+          "name": "Get Payment by Transaction ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/payments/transaction/TXN-001", "host": ["{{base_url}}"], "path": ["api","payments","transaction","TXN-001"] }
+          }
+        },
+        {
+          "name": "Get Payment by Order ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/payments/order/ORD-001", "host": ["{{base_url}}"], "path": ["api","payments","order","ORD-001"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Gateway Health",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/actuator/health", "host": ["{{base_url}}"], "path": ["actuator","health"] }
+          }
+        },
+        {
+          "name": "User Service Health",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:8085/actuator/health", "host": ["http://localhost:8085"], "path": ["actuator","health"] }
+          }
+        }
+      ]
+    }
+  ]
+}

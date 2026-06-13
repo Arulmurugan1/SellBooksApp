@@ -5,6 +5,7 @@ import com.booksellingapp.inventory.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class InventoryController {
     /**
      * Check stock availability
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/check-stock")
     public ResponseEntity<InventoryService.StockCheckResponse> checkStock(
             @RequestBody List<InventoryService.StockCheckRequest> requests) {
@@ -31,6 +33,7 @@ public class InventoryController {
     /**
      * Reserve stock
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/reserve-stock")
     public ResponseEntity<InventoryService.ReservationResponse> reserveStock(
             @RequestParam String orderId,
@@ -43,6 +46,7 @@ public class InventoryController {
     /**
      * Release reserved stock
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/release-stock")
     public ResponseEntity<InventoryService.ReleaseResponse> releaseStock(
             @RequestParam String orderId,
@@ -65,6 +69,7 @@ public class InventoryController {
     /**
      * Get all inventories
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<List<InventoryDTO>> getAllInventories() {
         log.info("GET request: /api/inventory");
@@ -75,6 +80,7 @@ public class InventoryController {
     /**
      * Get low stock items
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/low-stock")
     public ResponseEntity<List<InventoryDTO>> getLowStockItems() {
         log.info("GET request: /api/inventory/low-stock");
@@ -85,6 +91,7 @@ public class InventoryController {
     /**
      * Update inventory quantity
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{productId}")
     public ResponseEntity<InventoryDTO> updateInventory(
             @PathVariable String productId,

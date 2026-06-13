@@ -4,6 +4,11 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: user-service-auth
+          uri: lb://user-service
+          predicates:
+            - Path=/api/auth/**,/api/users/**
+
         - id: product-service
           uri: lb://product-service
           predicates:
@@ -48,6 +53,9 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+
+jwt:
+  secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
 
 resilience4j:
   circuitbreaker:

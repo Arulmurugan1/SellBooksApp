@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,6 +52,7 @@ public class ProductController {
     /**
      * Create new product
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
         log.info("POST request: /api/products - Creating product: {}", productDTO.getProductCode());
@@ -61,6 +63,7 @@ public class ProductController {
     /**
      * Update product
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ProductDTO> updateProduct(
             @PathVariable Long id,
@@ -73,6 +76,7 @@ public class ProductController {
     /**
      * Delete product
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         log.info("DELETE request: /api/products/{}", id);
